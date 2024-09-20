@@ -1,0 +1,13 @@
+{
+	"domain": "SMtemplate",
+	"name": "Sequent Microsystems __TEMPLATE__ Integration",
+	"version": "1.0.0",
+	"integration_type": "device",
+	"documentation": "https://github.com/SequentMicrosystems/SMtemplate-ha",
+	"issue_tracker": "https://github.com/SequentMicrosystems/SMtemplate-ha",
+	"dependencies": [],
+	"after_dependencies": [],
+	"codeownders": ["3lv"],
+	"config_flow": false,
+	"requirements": ["SMtemplate>=1.0.0"]
+}
