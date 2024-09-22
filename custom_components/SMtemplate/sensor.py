@@ -11,9 +11,12 @@ from inspect import signature
 
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.helpers.entity import generate_entity_id
+from homeassistant.helpers.event import async_track_time_interval
+from datetime import timedelta
 
 from . import (
         DOMAIN, CONF_STACK, CONF_TYPE, CONF_CHAN, CONF_NAME,
+        CONF_UPDATE_INTERVAL,
         SM_MAP, SM_API
 )
 SM_MAP = SM_MAP["sensor"]
@@ -25,26 +28,29 @@ async def async_setup_platform(hass, config, add_devices, discovery_info=None):
     if discovery_info == None:
         return
     add_devices([Sensor(
-		name=discovery_info.get(CONF_NAME, ""),
-        stack=discovery_info.get(CONF_STACK, 0),
+        hass=hass,
+		name=discovery_info.get(CONF_NAME),
+        stack=discovery_info.get(CONF_STACK),
         type=discovery_info.get(CONF_TYPE),
         chan=discovery_info.get(CONF_CHAN),
-        hass=hass
+        update_interval=discovery_info.get(CONF_UPDATE_INTERVAL) or 30,
 	)])
 
 class Sensor(SensorEntity):
-    def __init__(self, name, stack, type, chan, hass):
+    def __init__(self, hass, name, stack, type, chan, update_interval):
         generated_name = DOMAIN + str(stack) + "_" + type + "_" + str(chan)
         self._unique_id = generate_entity_id("sensor.{}", generated_name, hass=hass)
         self._name = name or generated_name
         self._stack = int(stack)
         self._type = type
         self._chan = int(chan)
+        self._update_interval = float(update_interval)
         self._short_timeout = .05
         self._icons = DEFAULT_ICONS | SM_MAP[self._type].get("icon", {})
         self._icon = self._icons["off"]
         self._uom = SM_MAP[self._type].get("uom", "")
         self._value = 0
+        self._remove_hooks = []
         self.__SM__init()
         ### CUSTOM_SETUP START
         ### CUSTOM_SETUP END
@@ -70,6 +76,20 @@ class Sensor(SensorEntity):
                 def _aux_SM_get(*args):
                     return _SM_get(self._stack, *args)
                 self._SM_get = _aux_SM_get
+
+    async def async_added_to_hass(self):
+        new_hook = async_track_time_interval(
+            self.hass, self.async_update_ha_state, timedelta(seconds=self._update_interval)
+        )
+        self._remove_hooks.append(new_hook)
+
+    async def async_will_remove_from_hass(self):
+        for remove_hook in self._remove_hooks:
+            remove_hook()
+
+    @property
+    def should_poll(self):
+        return False
 
     def update(self):
         time.sleep(self._short_timeout)

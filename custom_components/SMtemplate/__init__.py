@@ -20,6 +20,7 @@ CONF_STACK = "stack"
 CONF_TYPE = "type"
 CONF_CHAN = "chan"
 CONF_CHAN_RANGE = "chan_range"
+CONF_UPDATE_INTERVAL = "update_interval" # In seconds
 COM_NOGET = "__NOGET__"
 
 
@@ -69,7 +70,8 @@ async def async_setup(hass, config):
             continue
         for entity in card_config:
             card_config[entity] = card_config[entity] or {}
-            chan_range = card_config[entity].get(CONF_CHAN_RANGE, "")
+            chan_range = card_config[entity].get(CONF_CHAN_RANGE)
+            update_interval = card_config[entity].get(CONF_UPDATE_INTERVAL)
             try:
                 [chan_start, chan_end] = chan_range.split("..", 1)
                 chan_start = int(chan_start)
@@ -82,7 +84,8 @@ async def async_setup(hass, config):
                         CONF_NAME: NAME_PREFIX + str(stack) + "_" + entity + "_" + str(chan),
                         CONF_STACK: stack,
                         CONF_TYPE: type,
-                        CONF_CHAN: chan
+                        CONF_CHAN: chan,
+                        CONF_UPDATE_INTERVAL: update_interval,
                     }
                     _LOGGER.error("DEBUG chan from config: %d", entity_config[CONF_CHAN])
                     await SM_load_platform(hass, entity_config)
@@ -98,7 +101,8 @@ async def async_setup(hass, config):
                         CONF_NAME: NAME_PREFIX + str(stack) + "_" + entity,
                         CONF_STACK: stack,
                         CONF_TYPE: type,
-                        CONF_CHAN: chan
+                        CONF_CHAN: chan,
+                        CONF_UPDATE_INTERVAL: update_interval,
                 }
                 await SM_load_platform(hass, entity_config)
     return True
