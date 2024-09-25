@@ -52,8 +52,8 @@ class Sensor(SensorEntity):
         self._value = 0
         self._remove_hooks = []
         self.__SM__init()
-        ### CUSTOM_SETUP START
-        ### CUSTOM_SETUP END
+        ### __CUSTOM_SETUP__ START
+        ### __CUSTOM_SETUP__ END
 
     def __SM__init(self):
         com = SM_MAP[self._type]["com"]

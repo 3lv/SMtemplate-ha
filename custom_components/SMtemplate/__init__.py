@@ -78,7 +78,6 @@ async def async_setup(hass, config):
                 chan_end = int(chan_end)
                 type = entity
                 for chan in range(chan_start, chan_end + 1, 1):
-                    #_LOGGER.error("DEBUG chan: %d", chan)
                     entity_config = card_config[entity].copy()
                     entity_config |= {
                         CONF_NAME: NAME_PREFIX + str(stack) + "_" + entity + "_" + str(chan),
@@ -87,7 +86,6 @@ async def async_setup(hass, config):
                         CONF_CHAN: chan,
                         CONF_UPDATE_INTERVAL: update_interval,
                     }
-                    _LOGGER.error("DEBUG chan from config: %d", entity_config[CONF_CHAN])
                     await SM_load_platform(hass, entity_config)
             except:
                 try:

@@ -31,8 +31,8 @@ if [ -d "${project_dir}" ]; then
 	    filename=$(basename -- "$file")
 	    read -p "Do you want to update ${filename}? (y/n): " choice
 	    if [[ "$choice" == "y" ]]; then
-		#cp_update_file "${template_cdir}/${filename}" "${project_cdir}/${filename}"
-		cp -f "${template_cdir}/${filename}" "${project_cdir}/${filename}"
+		cp_update_file "${template_cdir}/${filename}" "${project_cdir}/${filename}"
+		#cp -f "${template_cdir}/${filename}" "${project_cdir}/${filename}"
 	    fi
 	done
 	read -p "Create commit and fast upload? (y/n): " choice

@@ -49,8 +49,8 @@ class Switch(SwitchEntity):
         self._icon = self._icons["off"]
         self.__SM__init()
         self._is_on = self._SM_get(self._chan)
-        ### CUSTOM_SETUP START
-        ### CUSTOM_SETUP END
+        ### __CUSTOM_SETUP__ START
+        ### __CUSTOM_SETUP__ END
 
     def __SM__init(self):
         com = SM_MAP[self._type]["com"]

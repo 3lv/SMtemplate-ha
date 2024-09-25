@@ -48,6 +48,8 @@ class Button(ButtonEntity):
         self._icons = DEFAULT_ICONS | SM_MAP[self._type].get("icon", {})
         self._icon = self._icons["off"]
         self.__SM__init()
+        ### __CUSTOM_SETUP__ START
+        ### __CUSTOM_SETUP__ END
     
     def __SM__init(self):
         com = SM_MAP[self._type]["com"]

@@ -56,12 +56,12 @@ class Number(NumberEntity):
         self._icon = self._icons["off"]
         self._uom = SM_MAP[self._type].get("uom", "")
         self._min_value = SM_MAP[self._type]["min_value"]
-        self._max_vealue = SM_MAP[self._type]["max_value"]
+        self._max_value = SM_MAP[self._type]["max_value"]
         self._step = SM_MAP[self._type]["step"]
         self._value = 0
         self.__SM__init()
-        ### CUSTOM_SETUP START
-        ### CUSTOM_SETUP END
+        ### __CUSTOM_SETUP__ START
+        ### __CUSTOM_SETUP__ END
 
     def __SM__init(self):
         com = SM_MAP[self._type]["com"]
