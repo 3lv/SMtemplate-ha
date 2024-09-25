@@ -42,6 +42,9 @@ for type in "${entity_types[@]}"; do
     done
 done
 printf -v readme_entities "%s\n" "${readme_entities_arr[@]}"
+readme_entities=${readme_entities%?}
+
+## DEBUG
 echo "${readme_entities}"
 
 # Define directories
