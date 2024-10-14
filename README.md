@@ -12,10 +12,9 @@ seamlessly with Home Assistant, bringing all your custom functionality into the 
 
 #### Video tutorials
 
-- [video]() for step 1.
-- [video]() for steps 2. and 3. 
-- [video]() for steps 4. and 5. (replace SMioplus-ha with SMtemplate-ha)
-
+- [Install HACS video](https://youtu.be/Fl3lATWhQVM) for step 1.
+- [Enable I2C and Install file editor video](https://youtu.be/53Zj8NofS7k) for steps 2. and 3.
+- [Install and config card drivers video](https://youtu.be/yH2HKjm7j24) for steps 4. and 5.
 
 #### Prerequirements
 
@@ -102,6 +101,8 @@ SMtemplate:
 
 - Only specific entities for different stack levels:
 
+> !The following example is provided for illustrative purposes only and does NOT necessarily represent real entities!
+
 ```yaml
 SMtemplate:
     - stack: 0
@@ -123,7 +124,7 @@ SMtemplate:
 ### `configuration.yaml` entities
 
 Possible entities:
-```
+```yaml
 __TEMPLATE_README_ENTITIES__
 ```
 
