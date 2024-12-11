@@ -29,7 +29,7 @@ async def async_setup_platform(hass, config, add_devices, discovery_info=None):
         return
     # TODO CHECK IF ALREADY CONFIGURED FOR WHATEVER REASON
     add_devices([Button(
-		name=discovery_info.get(CONF_NAME, ""),
+		name=discovery_info.get(CONF_NAME),
         stack=discovery_info.get(CONF_STACK, 0),
         type=discovery_info.get(CONF_TYPE),
         chan=discovery_info.get(CONF_CHAN),

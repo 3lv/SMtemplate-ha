@@ -20,7 +20,9 @@ CONF_STACK = "stack"
 CONF_TYPE = "type"
 CONF_CHAN = "chan"
 CONF_CHAN_RANGE = "chan_range"
+CONF_CHANNELS = "channels"
 CONF_UPDATE_INTERVAL = "update_interval" # In seconds
+CONF_INTERNET_SYNC_INTERVAL = "internet_sync_interval"
 COM_NOGET = "__NOGET__"
 
 
@@ -57,6 +59,18 @@ async def SM_load_all_platforms(hass, stack=0):
                 )
 
 
+def create_entity_config(config, entity, stack, type, chan):
+    entity_config = {
+            **config,
+            CONF_NAME: NAME_PREFIX + str(stack) + "_" + type + "_" + str(chan),
+            CONF_STACK: stack,
+            CONF_TYPE: type,
+            CONF_CHAN: chan,
+            CONF_UPDATE_INTERVAL: config.get(CONF_UPDATE_INTERVAL),
+            CONF_INTERNET_SYNC_INTERVAL: config.get(CONF_INTERNET_SYNC_INTERVAL),
+    }
+    return entity_config
+
 async def async_setup(hass, config):
     hass.data[DOMAIN] = []
     card_configs = config.get(DOMAIN)
@@ -70,37 +84,39 @@ async def async_setup(hass, config):
             continue
         for entity in card_config:
             card_config[entity] = card_config[entity] or {}
+            channels = card_config[entity].get(CONF_CHANNELS)
             chan_range = card_config[entity].get(CONF_CHAN_RANGE)
-            update_interval = card_config[entity].get(CONF_UPDATE_INTERVAL)
             try:
-                [chan_start, chan_end] = chan_range.split("..", 1)
-                chan_start = int(chan_start)
-                chan_end = int(chan_end)
                 type = entity
-                for chan in range(chan_start, chan_end + 1, 1):
-                    entity_config = card_config[entity].copy()
-                    entity_config |= {
-                        CONF_NAME: NAME_PREFIX + str(stack) + "_" + entity + "_" + str(chan),
-                        CONF_STACK: stack,
-                        CONF_TYPE: type,
-                        CONF_CHAN: chan,
-                        CONF_UPDATE_INTERVAL: update_interval,
-                    }
+                for chan in channels.split(','):
+                    chan = int(chan)
+                    entity_config = create_entity_config(
+                            card_config[entity], entity,
+                            stack, type, chan,
+                    );
                     await SM_load_platform(hass, entity_config)
             except:
                 try:
-                    [type, chan] = entity.rsplit("_", 1)
-                    chan = int(chan)
+                    [chan_start, chan_end] = chan_range.split("..", 1)
+                    chan_start = int(chan_start)
+                    chan_end = int(chan_end)
+                    type = entity
+                    for chan in range(chan_start, chan_end + 1, 1):
+                        entity_config = create_entity_config(
+                                card_config[entity], entity,
+                                stack, type, chan,
+                        );
+                        await SM_load_platform(hass, entity_config)
                 except:
-                    _LOGGER.error("%s doesn't respect type_channel format", entity)
-                    continue
-                entity_config = card_config[entity].copy()
-                entity_config |= {
-                        CONF_NAME: NAME_PREFIX + str(stack) + "_" + entity,
-                        CONF_STACK: stack,
-                        CONF_TYPE: type,
-                        CONF_CHAN: chan,
-                        CONF_UPDATE_INTERVAL: update_interval,
-                }
-                await SM_load_platform(hass, entity_config)
+                    try:
+                        [type, chan] = entity.rsplit("_", 1)
+                        chan = int(chan)
+                    except:
+                        _LOGGER.error("%s doesn't respect type_channel format", entity)
+                        continue
+                    entity_config = create_entity_config(
+                            card_config[entity], entity,
+                            stack, type, chan,
+                    );
+                    await SM_load_platform(hass, entity_config)
     return True
