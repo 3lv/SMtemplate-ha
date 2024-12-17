@@ -22,6 +22,25 @@ SM_MAP = {
                 },
         },
     },
+    "select": {
+        "type": {
+            "chan_no": 8,
+            "com": {
+                "get": "get_sensor_type",
+                "set": "set_sensor_type",
+            },
+            "option_map": {
+                "B": 0,
+                "E": 1,
+                "J": 2,
+                "K": 3,
+                "N": 4,
+                "R": 5,
+                "S": 6,
+                "T": 7,
+            }
+        },
+    },
     "sensor": {
         "opto_cnt": {
                 "chan_no": 8,
